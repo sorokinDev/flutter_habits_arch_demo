@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'habit.dart';
-import 'weekly_calendar.dart';
+import '../../../../data/models/habit.dart';
+import '../../../widgets/weekly_calendar.dart';
 
 class HabitTile extends StatelessWidget {
   final Habit habit;
