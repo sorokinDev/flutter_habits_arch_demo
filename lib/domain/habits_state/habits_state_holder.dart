@@ -20,7 +20,7 @@ class HabitsStateHolder extends ChangeNotifier {
       _habitsLoadingStatus = HabitsLoadingStatus.loading;
       notifyListeners();
 
-      final habits = await _dao.getAllHabits();
+      final habits = List.of(await _dao.getAllHabits());
 
       _habitsLoadingStatus = HabitsLoadingStatus.data;
       _habits = habits;
@@ -62,6 +62,7 @@ class HabitsStateHolder extends ChangeNotifier {
     }
 
     await _dao.saveHabit(habit);
+    notifyListeners();
   }
 }
 
