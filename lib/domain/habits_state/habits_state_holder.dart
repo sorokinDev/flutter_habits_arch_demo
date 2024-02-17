@@ -6,11 +6,13 @@ import '../../data/dao/habit_mock_dao.dart';
 import '../../data/models/habit.dart';
 
 class HabitsStateHolder extends ChangeNotifier {
-  final HabitDao _dao = HabitMockDao();
-  final Uuid _uuid = const Uuid();
+  final HabitDao _dao;
+  final Uuid _uuid;
 
   Map<String, Habit> _habits = {};
   HabitsLoadingStatus _habitsLoadingStatus = HabitsLoadingStatus.loading;
+
+  HabitsStateHolder(this._dao, this._uuid);
 
   List<Habit> get habits => _habits.values.toList();
   HabitsLoadingStatus get habitsLoadingStatus => _habitsLoadingStatus;
