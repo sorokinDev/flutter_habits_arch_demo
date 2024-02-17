@@ -60,13 +60,19 @@ class HabitsStateHolder extends ChangeNotifier {
       throw Exception('No habit with id: $habitId');
     }
 
+    final updatedDates = Set.of(habit.completedDates);
     if (habit.completedDates.contains(dateOnly)) {
-      habit.completedDates.remove(dateOnly);
+      updatedDates.remove(dateOnly);
     } else {
-      habit.completedDates.add(dateOnly);
+      updatedDates.add(dateOnly);
     }
+    final updatedHabit = habit.copyWith(
+      completedDates: updatedDates,
+    );
 
-    await _dao.saveHabit(habit);
+    await _dao.saveHabit(updatedHabit);
+
+    _habits = Map.of(_habits)..[habitId] = updatedHabit;
     notifyListeners();
   }
 }
