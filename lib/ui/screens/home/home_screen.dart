@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     onTapDate: (date) {
                       _habitsStateHolder.toggleDateForHabit(
-                        habit: habit,
+                        habitId: habit.id,
                         date: date,
                       );
                     },

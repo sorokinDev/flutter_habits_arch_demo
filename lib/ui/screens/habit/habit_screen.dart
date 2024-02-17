@@ -52,10 +52,10 @@ class _HabitScreenState extends State<HabitScreen> {
                 ),
               ),
               WeeklyCalendar(
-                selectedDates: habit.completedDates,
+                selectedDates: habit.completedDates.toSet(),
                 onTapDate: (date) {
                   _habitsStateHolder.toggleDateForHabit(
-                    habit: habit,
+                    habitId: habit.id,
                     date: date,
                   );
                 },

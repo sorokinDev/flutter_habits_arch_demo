@@ -9,10 +9,10 @@ class HabitsStateHolder extends ChangeNotifier {
   final HabitDao _dao = HabitMockDao();
   final Uuid _uuid = const Uuid();
 
-  List<Habit> _habits = [];
+  Map<String, Habit> _habits = {};
   HabitsLoadingStatus _habitsLoadingStatus = HabitsLoadingStatus.loading;
 
-  List<Habit> get habits => _habits;
+  List<Habit> get habits => _habits.values.toList();
   HabitsLoadingStatus get habitsLoadingStatus => _habitsLoadingStatus;
 
   Future<void> fetchHabits() async {
@@ -20,13 +20,15 @@ class HabitsStateHolder extends ChangeNotifier {
       _habitsLoadingStatus = HabitsLoadingStatus.loading;
       notifyListeners();
 
-      final habits = List.of(await _dao.getAllHabits());
+      final habitList = await _dao.getAllHabits();
 
+      _habits = Map.fromEntries(
+        habitList.map((habit) => MapEntry(habit.id, habit)),
+      );
       _habitsLoadingStatus = HabitsLoadingStatus.data;
-      _habits = habits;
     } catch (_) {
+      _habits = {};
       _habitsLoadingStatus = HabitsLoadingStatus.error;
-      _habits = [];
     } finally {
       notifyListeners();
     }
@@ -38,11 +40,10 @@ class HabitsStateHolder extends ChangeNotifier {
     final habit = Habit(
       id: _uuid.v1(),
       title: title,
-      completedDates: {},
     );
     try {
       await _dao.addHabit(habit);
-      _habits.add(habit);
+      _habits[habit.id] = habit;
       notifyListeners();
     } catch (_) {
       rethrow;
@@ -50,10 +51,14 @@ class HabitsStateHolder extends ChangeNotifier {
   }
 
   Future<void> toggleDateForHabit({
-    required Habit habit,
+    required String habitId,
     required DateTime date,
   }) async {
     final dateOnly = DateUtils.dateOnly(date);
+    final habit = _habits[habitId];
+    if (habit == null) {
+      throw Exception('No habit with id: $habitId');
+    }
 
     if (habit.completedDates.contains(dateOnly)) {
       habit.completedDates.remove(dateOnly);

@@ -1,11 +1,12 @@
-class Habit {
-  String id;
-  String title;
-  Set<DateTime> completedDates;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Habit({
-    required this.id,
-    required this.title,
-    required this.completedDates,
-  });
+part 'habit.freezed.dart';
+
+@freezed
+class Habit with _$Habit {
+  factory Habit({
+    required String id,
+    required String title,
+    @Default({}) Set<DateTime> completedDates,
+  }) = _Habit;
 }

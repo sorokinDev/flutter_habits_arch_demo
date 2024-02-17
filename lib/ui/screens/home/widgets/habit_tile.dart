@@ -44,7 +44,7 @@ class HabitTile extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         WeeklyCalendar(
-          selectedDates: habit.completedDates,
+          selectedDates: habit.completedDates.toSet(),
           onTapDate: onTapDate,
         ),
       ],
