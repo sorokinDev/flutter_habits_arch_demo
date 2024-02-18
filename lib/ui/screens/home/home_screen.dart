@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habits_arch_demo/domain/habits_state/habits_state_holder.dart';
 import 'package:habits_arch_demo/ui/screens/habit_create/habit_create_screen.dart';
 import 'package:habits_arch_demo/ui/screens/habit/habit_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/di/di.dart';
 import '../../../data/models/habit.dart';
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _habitsStateHolder = Locator.habitsStateHolder;
+    _habitsStateHolder = context.read<HabitsStateHolder>();
     _habitsStateHolder.fetchHabits();
   }
 

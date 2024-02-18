@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/di/di.dart';
 import '../../../data/models/habit.dart';
@@ -23,7 +24,7 @@ class _HabitScreenState extends State<HabitScreen> {
   @override
   void initState() {
     super.initState();
-    _habitsStateHolder = Locator.habitsStateHolder;
+    _habitsStateHolder = context.read<HabitsStateHolder>();
   }
 
   @override

@@ -7,14 +7,15 @@ import 'package:uuid/uuid.dart';
 
 import 'di.config.dart';
 
-final getIt = GetIt.instance;
+final _getIt = GetIt.instance;
+final diContainer = DependencyContainer._();
 
 @InjectableInit(
   initializerName: 'init', // default
   preferRelativeImports: true, // default
   asExtension: true, // default
 )
-void configureDependencies() => getIt.init();
+void configureDependencies() => _getIt.init();
 
 @module
 abstract class RegisterModule {
@@ -32,6 +33,8 @@ abstract class RegisterModule {
       HabitsStateHolder(habitDao, uuid);
 }
 
-abstract class Locator {
-  static final habitsStateHolder = getIt<HabitsStateHolder>();
+class DependencyContainer {
+  DependencyContainer._();
+
+  HabitsStateHolder get habitsStateHolder => _getIt<HabitsStateHolder>();
 }

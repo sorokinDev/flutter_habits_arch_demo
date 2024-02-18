@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:habits_arch_demo/data/dao/habit_dao.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../data/dao/habit_mock_dao.dart';
 import '../../data/models/habit.dart';
 
 class HabitsStateHolder extends ChangeNotifier {

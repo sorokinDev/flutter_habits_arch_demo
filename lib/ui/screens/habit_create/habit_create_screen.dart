@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habits_arch_demo/domain/habits_state/habits_state_holder.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/di/di.dart';
 import '../../../data/models/habit.dart';
@@ -20,7 +21,7 @@ class _HabitCreateScreenState extends State<HabitCreateScreen> {
   @override
   void initState() {
     super.initState();
-    _habitsStateHolder = Locator.habitsStateHolder;
+    _habitsStateHolder = context.read<HabitsStateHolder>();
     _titleController = TextEditingController();
   }
 
