@@ -11,8 +11,8 @@ class HabitsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: diContainer.habitsStateHolder,
+        Provider.value(
+          value: diContainer.habitsRepository,
         ),
       ],
       child: MaterialApp(

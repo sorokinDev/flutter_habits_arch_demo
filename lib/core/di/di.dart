@@ -1,10 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:habits_arch_demo/data/dao/habit_dao.dart';
-import 'package:habits_arch_demo/data/dao/habit_mock_dao.dart';
-import 'package:habits_arch_demo/domain/habits_state/habits_state_holder.dart';
+import 'package:habits_arch_demo/domain/repositories/habits_repository.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../data/dao/habit_runtime_dao.dart';
 import 'di.config.dart';
 
 final _getIt = GetIt.instance;
@@ -23,18 +23,18 @@ abstract class RegisterModule {
   Uuid uuid() => const Uuid();
 
   @lazySingleton
-  HabitDao habitDao() => HabitMockDao();
+  HabitDao habitDao(Uuid uuid) => HabitRuntimeDao(uuid);
 
   @lazySingleton
-  HabitsStateHolder habitsStateHolder(
+  HabitsRepository habitsRepository(
     HabitDao habitDao,
     Uuid uuid,
   ) =>
-      HabitsStateHolder(habitDao, uuid);
+      throw UnimplementedError();
 }
 
 class DependencyContainer {
   DependencyContainer._();
 
-  HabitsStateHolder get habitsStateHolder => _getIt<HabitsStateHolder>();
+  HabitsRepository get habitsRepository => _getIt<HabitsRepository>();
 }

@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:habits_arch_demo/data/dao/habit_dao.dart';
-import 'package:uuid/uuid.dart';
+import 'package:habits_arch_demo/domain/entities/habit_entity.dart';
+import 'package:habits_arch_demo/domain/repositories/habits_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
-import '../../data/models/habit.dart';
-
-class HabitsStateHolder extends ChangeNotifier {
+class HabitsRepositoryImpl implements HabitsRepository {
   final HabitDao _dao;
   final Uuid _uuid;
 
-  Map<String, Habit> _habits = {};
+  Map<String, HabitDto> _habits = {};
   HabitsLoadingStatus _habitsLoadingStatus = HabitsLoadingStatus.loading;
 
   HabitsStateHolder(this._dao, this._uuid);
 
-  List<Habit> get habits => _habits.values.toList();
+  List<HabitDto> get habits => _habits.values.toList();
   HabitsLoadingStatus get habitsLoadingStatus => _habitsLoadingStatus;
 
   Future<void> fetchHabits() async {
@@ -38,7 +36,7 @@ class HabitsStateHolder extends ChangeNotifier {
   Future<void> addHabit({
     required String title,
   }) async {
-    final habit = Habit(
+    final habit = HabitDto(
       id: _uuid.v1(),
       title: title,
     );
@@ -76,10 +74,4 @@ class HabitsStateHolder extends ChangeNotifier {
     _habits = Map.of(_habits)..[habitId] = updatedHabit;
     notifyListeners();
   }
-}
-
-enum HabitsLoadingStatus {
-  loading,
-  data,
-  error,
 }
