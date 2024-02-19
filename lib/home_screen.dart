@@ -44,13 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
             final habit = _habits[index];
             return HabitTile(
               habit: habit,
-              onTapHabit: () {
-                Navigator.push(
+              onTapHabit: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => HabitScreen(habit: habit),
                   ),
                 );
+                setState(() {});
               },
               onTapDate: (date) {
                 setState(() {
