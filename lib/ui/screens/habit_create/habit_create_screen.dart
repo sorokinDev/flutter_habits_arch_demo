@@ -69,7 +69,7 @@ class _HabitCreateViewState extends State<_HabitCreateView> {
                   setState(() {
                     _isCreating = true;
                   });
-                  widget.habitRepository.addHabit(
+                  await widget.habitRepository.addHabit(
                     HabitCreationEntity(title: _titleController.text),
                   );
                   if (mounted) {

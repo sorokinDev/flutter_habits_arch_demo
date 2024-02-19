@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:habits_arch_demo/domain/habit_state_holder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:habits_arch_demo/domain/repositories/habit_repository.dart';
 
+import '../../../core/providers.dart';
 import '../../widgets/weekly_calendar.dart';
 
 class HabitShowScreen extends StatelessWidget {
@@ -13,14 +15,21 @@ class HabitShowScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _HabitShowView(habitId: habitId);
+    return Consumer(
+      builder: (context, ref, _) => _HabitShowView(
+        habitRepository: ref.watch(habitRepositoryProvider),
+        habitId: habitId,
+      ),
+    );
   }
 }
 
 class _HabitShowView extends StatefulWidget {
+  final HabitsRepository habitRepository;
   final String habitId;
 
   const _HabitShowView({
+    required this.habitRepository,
     required this.habitId,
     super.key,
   });
@@ -32,13 +41,18 @@ class _HabitShowView extends StatefulWidget {
 class _HabitShowViewState extends State<_HabitShowView> {
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-        listenable: HabitsStateHolder.instance,
-        builder: (context, _) {
-          final habit = HabitsStateHolder.instance.getHabitById(widget.habitId);
+    return StreamBuilder(
+        stream: widget.habitRepository.habitByIdStream(widget.habitId),
+        builder: (context, snapshot) {
+          final habit = snapshot.data;
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error'),
+            );
+          }
           if (habit == null) {
-            return Center(
-              child: Text('Error, no such habit'),
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }
           return Scaffold(
@@ -62,7 +76,7 @@ class _HabitShowViewState extends State<_HabitShowView> {
                 WeeklyCalendar(
                   selectedDates: habit.completedDates,
                   onTapDate: (date) {
-                    HabitsStateHolder.instance.toggleDateForHabit(
+                    widget.habitRepository.toggleDateForHabit(
                       habitId: habit.id,
                       date: date,
                     );
