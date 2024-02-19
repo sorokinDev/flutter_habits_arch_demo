@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:habits_arch_demo/domain/habit_state_holder.dart';
 import 'package:habits_arch_demo/ui/screens/habit_create/habit_create_screen.dart';
 
-import '../../../data/models/habit.dart';
-import 'widgets/habit_tile.dart';
 import '../habit_show/habit_show_screen.dart';
+import 'widgets/habit_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,135 +13,82 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  _HomePageStatus _pageStatus = _HomePageStatus.loading;
-  List<Habit> _habits = [];
-
   @override
   void initState() {
     super.initState();
-    _loadHabits();
+    HabitsStateHolder.instance.fetchHabits();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bodyWidget = switch (_pageStatus) {
-      _HomePageStatus.loading => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      _HomePageStatus.error => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Error loading data'),
-              SizedBox(height: 16),
-              ElevatedButton(onPressed: _loadHabits, child: Text('Retry')),
-            ],
-          ),
-        ),
-      _HomePageStatus.data => ListView.separated(
-          itemCount: _habits.length,
-          itemBuilder: (context, index) {
-            final habit = _habits[index];
-            return HabitTile(
-              habit: habit,
-              onTapHabit: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => HabitShowScreen(habit: habit),
-                  ),
-                );
-                setState(() {});
-              },
-              onTapDate: (date) {
-                setState(() {
-                  if (habit.completedDates.contains(date)) {
-                    habit.completedDates.remove(date);
-                  } else {
-                    habit.completedDates.add(date);
-                  }
-                });
-              },
-            );
-          },
-          separatorBuilder: (_, __) => const SizedBox(height: 16),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        )
-    };
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Habit'),
+        title: Text('Habit Tracker'),
       ),
-      body: bodyWidget,
+      body: ListenableBuilder(
+        listenable: HabitsStateHolder.instance,
+        builder: (context, _) {
+          final habits = HabitsStateHolder.instance.habits;
+          final status = HabitsStateHolder.instance.habitsLoadingStatus;
+          final bodyWidget = switch (status) {
+            HabitsLoadingStatus.loading => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            HabitsLoadingStatus.error => Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Error loading data'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: HabitsStateHolder.instance.fetchHabits,
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+            HabitsLoadingStatus.data => ListView.separated(
+              itemCount: habits.length,
+              itemBuilder: (context, index) {
+                final habit = habits[index];
+                return HabitTile(
+                  habit: habit,
+                  onTapHabit: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => HabitShowScreen(habitId: habit.id),
+                      ),
+                    );
+                  },
+                  onTapDate: (date) {
+                    HabitsStateHolder.instance.toggleDateForHabit(
+                      habitId: habit.id,
+                      date: date,
+                    );
+                  },
+                );
+              },
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            )
+          };
+          return bodyWidget;
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final newHabit = await Navigator.push(
+          Navigator.push(
             context,
-            MaterialPageRoute<Habit>(
+            MaterialPageRoute(
               builder: (context) => const HabitCreateScreen(),
             ),
           );
-
-          if (newHabit != null) {
-            _createHabit(newHabit);
-          }
         },
         tooltip: 'Add Habit',
         child: const Icon(Icons.add),
       ),
     );
   }
-
-  Future<void> _loadHabits() async {
-    try {
-      _safeSetState(() {
-        _pageStatus = _HomePageStatus.loading;
-      });
-      final habits = await Future.delayed(
-        Duration(seconds: 1),
-        () => [
-          Habit(
-            title: 'Sleep 8 hrs',
-            completedDates: {
-              DateUtils.dateOnly(DateTime.now().subtract(Duration(days: 1))),
-            },
-          ),
-          Habit(
-            title: 'Read Books',
-            completedDates: {
-              DateUtils.dateOnly(DateTime.now().subtract(Duration(days: 2))),
-              DateUtils.dateOnly(DateTime.now().subtract(Duration(days: 3))),
-            },
-          ),
-        ],
-      );
-      _safeSetState(() {
-        _pageStatus = _HomePageStatus.data;
-        _habits = habits;
-      });
-    } catch (_) {
-      _safeSetState(() {
-        _pageStatus = _HomePageStatus.error;
-      });
-    }
-  }
-
-  Future<void> _createHabit(Habit habit) async {
-    _safeSetState(() {
-      _habits.add(habit);
-    });
-
-    // Save to DB or network
-  }
-
-  void _safeSetState(VoidCallback callback) {
-    if (!mounted) {
-      return;
-    }
-    setState(callback);
-  }
 }
-
-enum _HomePageStatus { loading, data, error }

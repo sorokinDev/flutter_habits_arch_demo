@@ -71,6 +71,8 @@ class HabitsStateHolder extends ChangeNotifier {
     await _dao.updateHabit(habit);
     notifyListeners();
   }
+
+  Habit? getHabitById(String id) => _habits[id];
 }
 
 enum HabitsLoadingStatus {

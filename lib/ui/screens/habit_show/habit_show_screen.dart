@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/models/habit.dart';
 import '../../widgets/weekly_calendar.dart';
 
 class HabitShowScreen extends StatefulWidget {
-  final Habit habit;
+  final String habitId;
 
   const HabitShowScreen({
-    required this.habit,
+    required this.habitId,
     super.key,
   });
 
@@ -16,20 +15,6 @@ class HabitShowScreen extends StatefulWidget {
 }
 
 class _HabitShowScreenState extends State<HabitShowScreen> {
-  late Habit _habit;
-
-  @override
-  void initState() {
-    super.initState();
-    _habit = widget.habit;
-  }
-
-  @override
-  void didUpdateWidget(covariant HabitShowScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _habit = widget.habit;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
