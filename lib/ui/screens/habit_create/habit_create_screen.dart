@@ -1,15 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:habits_arch_demo/core/providers.dart';
+import 'package:habits_arch_demo/domain/entities/entities.dart';
+import 'package:habits_arch_demo/domain/repositories/habit_repository.dart';
 
-import '../../../domain/habit_state_holder.dart';
-
-class HabitCreateScreen extends StatefulWidget {
+class HabitCreateScreen extends StatelessWidget {
   const HabitCreateScreen({super.key});
 
   @override
-  State<HabitCreateScreen> createState() => _HabitCreateScreenState();
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) => _HabitCreateView(
+        habitRepository: ref.watch(habitRepositoryProvider),
+      ),
+    );
+  }
 }
 
-class _HabitCreateScreenState extends State<HabitCreateScreen> {
+class _HabitCreateView extends StatefulWidget {
+  final HabitsRepository habitRepository;
+
+  const _HabitCreateView({
+    required this.habitRepository,
+    super.key,
+  });
+
+  @override
+  State<_HabitCreateView> createState() => _HabitCreateViewState();
+}
+
+class _HabitCreateViewState extends State<_HabitCreateView> {
   late final TextEditingController _titleController;
 
   bool _isCreating = false;
@@ -49,8 +69,8 @@ class _HabitCreateScreenState extends State<HabitCreateScreen> {
                   setState(() {
                     _isCreating = true;
                   });
-                  await HabitsStateHolder.instance.addHabit(
-                    title: _titleController.text,
+                  widget.habitRepository.addHabit(
+                    HabitCreationEntity(title: _titleController.text),
                   );
                   if (mounted) {
                     Navigator.pop(context);

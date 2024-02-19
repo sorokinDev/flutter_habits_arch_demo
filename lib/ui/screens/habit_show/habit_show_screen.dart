@@ -3,7 +3,7 @@ import 'package:habits_arch_demo/domain/habit_state_holder.dart';
 
 import '../../widgets/weekly_calendar.dart';
 
-class HabitShowScreen extends StatefulWidget {
+class HabitShowScreen extends StatelessWidget {
   final String habitId;
 
   const HabitShowScreen({
@@ -12,10 +12,24 @@ class HabitShowScreen extends StatefulWidget {
   });
 
   @override
-  State<HabitShowScreen> createState() => _HabitShowScreenState();
+  Widget build(BuildContext context) {
+    return _HabitShowView(habitId: habitId);
+  }
 }
 
-class _HabitShowScreenState extends State<HabitShowScreen> {
+class _HabitShowView extends StatefulWidget {
+  final String habitId;
+
+  const _HabitShowView({
+    required this.habitId,
+    super.key,
+  });
+
+  @override
+  State<_HabitShowView> createState() => _HabitShowViewState();
+}
+
+class _HabitShowViewState extends State<_HabitShowView> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(

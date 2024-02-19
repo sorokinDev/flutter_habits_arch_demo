@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:habits_arch_demo/domain/entities/entities.dart';
 
-import '../../../../data/models/habit.dart';
 import '../../../widgets/weekly_calendar.dart';
 
 class HabitTile extends StatelessWidget {
-  final Habit habit;
+  final HabitEntity habit;
   final Function(DateTime) onTapDate;
   final VoidCallback onTapHabit;
 
