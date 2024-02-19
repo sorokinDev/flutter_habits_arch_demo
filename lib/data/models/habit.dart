@@ -1,9 +1,11 @@
 class Habit {
+  final String id;
   String title;
   Set<DateTime> completedDates;
 
   Habit({
+    required this.id,
     required this.title,
-    required this.completedDates,
+    this.completedDates = const <DateTime>{},
   });
 }
