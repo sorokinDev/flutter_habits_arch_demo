@@ -50,6 +50,18 @@ class _HabitScreenState extends State<HabitScreen> {
               ),
             ),
           ),
+          WeeklyCalendar(
+            selectedDates: _habit.completedDates,
+            onTapDate: (date) {
+              setState(() {
+                if (_habit.completedDates.contains(date)) {
+                  _habit.completedDates.remove(date);
+                } else {
+                  _habit.completedDates.add(date);
+                }
+              });
+            },
+          ),
         ],
       ),
     );
