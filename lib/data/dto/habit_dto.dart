@@ -1,12 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'habit.freezed.dart';
+part 'habit_dto.freezed.dart';
 
 @freezed
-class Habit with _$Habit {
-  factory Habit({
+class HabitDto with _$HabitDto {
+  factory HabitDto({
     required String id,
     required String title,
     @Default({}) Set<DateTime> completedDates,
-  }) = _Habit;
+  }) = _HabitDto;
 }

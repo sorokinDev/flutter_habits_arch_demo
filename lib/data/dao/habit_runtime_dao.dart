@@ -1,56 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../models/habit.dart';
+import '../dto/dtos.dart';
 import 'habit_dao.dart';
 
 class HabitRuntimeDao implements HabitDao {
-  final Uuid _uuid = const Uuid();
+  final Uuid _uuid;
 
-  late final Map<String, Habit> _habits = _createInitialData();
+  late final Map<String, HabitDto> _habits = _createInitialData();
 
-  HabitRuntimeDao();
+  HabitRuntimeDao(this._uuid);
 
   @override
-  Future<List<Habit>> getAllHabits() => Future.delayed(
-        const Duration(seconds: 1),
+  Future<List<HabitDto>> getAllHabits() => Future.delayed(
+    const Duration(seconds: 1),
         () => _habits.values.toList(),
-      );
+  );
 
   @override
-  Future<void> addHabit(Habit habit) async {
+  Future<HabitDto> addHabit(HabitCreationDto habit) async {
     await Future.delayed(const Duration(seconds: 1));
-    _habits[habit.id] = habit;
+    final newHabit = HabitDto(
+      id: _uuid.v1(),
+      title: habit.title,
+    );
+    _habits[newHabit.id] = newHabit;
+    return newHabit;
   }
 
   @override
-  Future<void> updateHabit(Habit habit) async {
+  Future<HabitDto> updateHabit(HabitDto habit) async {
     _habits[habit.id] = habit;
+    return habit;
   }
 
-  Map<String, Habit> _createInitialData() => Map.fromEntries(
-        [
-          Habit(
-            id: _uuid.v1(),
-            title: 'Sleep 8 hrs',
-            completedDates: {
-              DateUtils.dateOnly(
-                DateTime.now().subtract(const Duration(days: 1)),
-              ),
-            },
+  Map<String, HabitDto> _createInitialData() => Map.fromEntries(
+    [
+      HabitDto(
+        id: _uuid.v1(),
+        title: 'Sleep 8 hrs',
+        completedDates: {
+          DateUtils.dateOnly(
+            DateTime.now().subtract(const Duration(days: 1)),
           ),
-          Habit(
-            id: _uuid.v1(),
-            title: 'Read Books',
-            completedDates: {
-              DateUtils.dateOnly(
-                DateTime.now().subtract(const Duration(days: 2)),
-              ),
-              DateUtils.dateOnly(
-                DateTime.now().subtract(const Duration(days: 3)),
-              ),
-            },
+        },
+      ),
+      HabitDto(
+        id: _uuid.v1(),
+        title: 'Read Books',
+        completedDates: {
+          DateUtils.dateOnly(
+            DateTime.now().subtract(const Duration(days: 2)),
           ),
-        ].map((habit) => MapEntry(habit.id, habit)),
-      );
+          DateUtils.dateOnly(
+            DateTime.now().subtract(const Duration(days: 3)),
+          ),
+        },
+      ),
+    ].map((habit) => MapEntry(habit.id, habit)),
+  );
 }

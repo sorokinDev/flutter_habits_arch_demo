@@ -1,7 +1,7 @@
-import '../models/habit.dart';
+import '../dto/dtos.dart';
 
 abstract interface class HabitDao {
-  Future<List<Habit>> getAllHabits();
-  Future<void> addHabit(Habit habit);
-  Future<void> updateHabit(Habit habit);
+  Future<List<HabitDto>> getAllHabits();
+  Future<HabitDto> addHabit(HabitCreationDto habit);
+  Future<HabitDto> updateHabit(HabitDto habit);
 }
