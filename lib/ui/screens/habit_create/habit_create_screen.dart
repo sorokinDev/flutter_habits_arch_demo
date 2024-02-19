@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'habit.dart';
+import '../../../data/models/habit.dart';
 
 class HabitCreateScreen extends StatefulWidget {
   const HabitCreateScreen({super.key});

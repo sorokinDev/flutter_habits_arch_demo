@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:habits_arch_demo/habit_create_screen.dart';
-import 'package:habits_arch_demo/habit_screen.dart';
+import 'package:habits_arch_demo/ui/screens/habit_create/habit_create_screen.dart';
 
-import 'habit.dart';
-import 'habit_tile.dart';
+import '../../../data/models/habit.dart';
+import 'widgets/habit_tile.dart';
+import '../habit_show/habit_show_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => HabitScreen(habit: habit),
+                    builder: (_) => HabitShowScreen(habit: habit),
                   ),
                 );
                 setState(() {});
