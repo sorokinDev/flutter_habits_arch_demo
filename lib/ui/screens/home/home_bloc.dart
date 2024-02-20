@@ -38,9 +38,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(HomeEvent.datePressed(habitId: habitId, date: date));
   }
 
-  FutureOr<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) {
+  FutureOr<void> _onStarted(HomeStarted event, Emitter<HomeState> emit) async {
     emit(const HomeState.progress());
-    emit.forEach(
+
+    await emit.forEach(
       _repository.habitsStream,
       onData: (habits) => HomeState.data(habits: habits),
       onError: (e, _) => const HomeState.failure(),
@@ -61,5 +62,4 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       date: event.date,
     );
   }
-
 }

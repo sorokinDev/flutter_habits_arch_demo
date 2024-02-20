@@ -32,9 +32,9 @@ class HabitShowBloc extends Bloc<HabitShowEvent, HabitShowState> {
   FutureOr<void> _onStarted(
     HabitShowStarted event,
     Emitter<HabitShowState> emit,
-  ) {
+  ) async {
     emit(const HabitShowState.loading());
-    emit.forEach(
+    await emit.forEach(
       _repository.habitByIdStream(_habitId),
       onData: (habit) => HabitShowState.data(habit: habit),
       onError: (_, __) => const HabitShowState.failure(),
